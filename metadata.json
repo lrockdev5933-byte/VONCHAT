@@ -1,0 +1,8 @@
+{
+  "name": "vonChat",
+  "description": "Friendly calm green messaging web app powered by Firebase Authentication and Supabase.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
