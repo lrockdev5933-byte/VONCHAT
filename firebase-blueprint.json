@@ -1,0 +1,674 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "Private owner-only user profile and settings document containing PII (email) and personal preferences.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "Firebase Auth UID matching the document ID.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Normalized lowercase user email address.",
+          "minLength": 3,
+          "maxLength": 254
+        },
+        "display_name": {
+          "type": "string",
+          "description": "Public display name.",
+          "minLength": 1,
+          "maxLength": 60
+        },
+        "avatar_color": {
+          "type": "string",
+          "description": "Hex color for avatar badge.",
+          "minLength": 7,
+          "maxLength": 7,
+          "pattern": "^#[0-9a-fA-F]{6}$"
+        },
+        "is_online": {
+          "type": "boolean",
+          "description": "Current online availability flag."
+        },
+        "status_message": {
+          "type": "string",
+          "description": "Optional custom status message.",
+          "minLength": 0,
+          "maxLength": 120
+        },
+        "bio": {
+          "type": "string",
+          "description": "Short user bio displayed in profile settings and member cards.",
+          "minLength": 0,
+          "maxLength": 240
+        },
+        "chat_wallpaper": {
+          "type": "string",
+          "description": "Selected calm nature wallpaper theme ID.",
+          "minLength": 1,
+          "maxLength": 40,
+          "pattern": "^[a-z0-9_]+$"
+        },
+        "last_seen_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO timestamp of last presence update.",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server creation timestamp."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server update timestamp."
+        }
+      },
+      "required": [
+        "uid",
+        "email",
+        "display_name",
+        "avatar_color",
+        "is_online",
+        "status_message",
+        "chat_wallpaper",
+        "last_seen_at",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "UserContact": {
+      "title": "UserContact",
+      "description": "Owner-only record mapping a known contact UID to the email address used to look them up.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "minLength": 3,
+          "maxLength": 254
+        },
+        "display_name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 60
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["uid", "email", "display_name", "createdAt", "updatedAt"]
+    },
+    "PresenceCard": {
+      "title": "PresenceCard",
+      "description": "Non-PII public profile card (no email) readable via exact userId lookup.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "display_name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 60
+        },
+        "avatar_color": {
+          "type": "string",
+          "minLength": 7,
+          "maxLength": 7,
+          "pattern": "^#[0-9a-fA-F]{6}$"
+        },
+        "is_online": {
+          "type": "boolean"
+        },
+        "status_message": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 120
+        },
+        "bio": {
+          "type": "string",
+          "description": "Short user bio displayed on member presence cards.",
+          "minLength": 0,
+          "maxLength": 240
+        },
+        "last_seen_at": {
+          "type": "string",
+          "format": "date-time",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "uid",
+        "display_name",
+        "avatar_color",
+        "is_online",
+        "status_message",
+        "last_seen_at",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "EmailDirectoryEntry": {
+      "title": "EmailDirectoryEntry",
+      "description": "Exact-email SHA-256 lookup index mapping hashed lowercase email to non-PII user identity.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "display_name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 60
+        },
+        "avatar_color": {
+          "type": "string",
+          "minLength": 7,
+          "maxLength": 7,
+          "pattern": "^#[0-9a-fA-F]{6}$"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["uid", "display_name", "avatar_color", "createdAt", "updatedAt"]
+    },
+    "Conversation": {
+      "title": "Conversation",
+      "description": "Canonical 1-on-1 conversation between two fixed participants.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "participantA": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "participantB": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "created_by": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "last_message_preview": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 500
+        },
+        "last_message_at": {
+          "type": "string",
+          "format": "date-time",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "last_sender_id": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 128
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "participantA",
+        "participantB",
+        "created_by",
+        "last_message_preview",
+        "last_message_at",
+        "last_sender_id",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "ConversationParticipant": {
+      "title": "ConversationParticipant",
+      "description": "Per-participant read cursor and live typing state inside a conversation.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "conversation_id": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "last_read_at": {
+          "type": "string",
+          "format": "date-time",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "is_typing": {
+          "type": "boolean"
+        },
+        "typing_updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "archived": {
+          "type": "boolean",
+          "description": "Whether this participant has archived the conversation from their primary inbox."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "uid",
+        "conversation_id",
+        "last_read_at",
+        "is_typing",
+        "typing_updated_at",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "Message": {
+      "title": "Message",
+      "description": "Text or sticker message sent within a 1-on-1 conversation.",
+      "type": "object",
+      "properties": {
+        "conversation_id": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "sender_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "participantA": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "participantB": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "content": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "message_type": {
+          "type": "string",
+          "enum": ["text", "sticker"]
+        },
+        "sticker_id": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 64
+        },
+        "created_at_iso": {
+          "type": "string",
+          "format": "date-time",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "conversation_id",
+        "sender_id",
+        "participantA",
+        "participantB",
+        "content",
+        "message_type",
+        "sticker_id",
+        "created_at_iso",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "MessageReaction": {
+      "title": "MessageReaction",
+      "description": "Emoji reaction appended to a message in a conversation.",
+      "type": "object",
+      "properties": {
+        "message_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "conversation_id": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "user_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "participantA": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "participantB": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "emoji": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 16
+        },
+        "created_at_iso": {
+          "type": "string",
+          "format": "date-time",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "message_id",
+        "conversation_id",
+        "user_id",
+        "participantA",
+        "participantB",
+        "emoji",
+        "created_at_iso",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "Status": {
+      "title": "Status",
+      "description": "24-hour status update supporting text, pictures, short videos, and stickers shared with active chat contacts.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "author_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "author_name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 60
+        },
+        "author_avatar_color": {
+          "type": "string",
+          "minLength": 7,
+          "maxLength": 7,
+          "pattern": "^#[0-9a-fA-F]{6}$"
+        },
+        "media_type": {
+          "type": "string",
+          "enum": ["text", "image", "video", "sticker"]
+        },
+        "caption": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 300
+        },
+        "media_url": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 750000
+        },
+        "sticker_id": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 64
+        },
+        "background_theme": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 24,
+          "pattern": "^[a-z0-9_]+$"
+        },
+        "visible_to": {
+          "type": "array",
+          "description": "Bounded list of up to 50 UIDs allowed to view this status (always includes author_id)."
+        },
+        "created_at_iso": {
+          "type": "string",
+          "format": "date-time",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "expires_at_iso": {
+          "type": "string",
+          "format": "date-time",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "author_id",
+        "author_name",
+        "author_avatar_color",
+        "media_type",
+        "caption",
+        "media_url",
+        "sticker_id",
+        "background_theme",
+        "visible_to",
+        "created_at_iso",
+        "expires_at_iso",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "StatusView": {
+      "title": "StatusView",
+      "description": "View receipt recorded when a contact views a status update.",
+      "type": "object",
+      "properties": {
+        "status_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "author_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "viewer_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "viewer_name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 60
+        },
+        "viewer_avatar_color": {
+          "type": "string",
+          "minLength": 7,
+          "maxLength": 7,
+          "pattern": "^#[0-9a-fA-F]{6}$"
+        },
+        "viewed_at_iso": {
+          "type": "string",
+          "format": "date-time",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "status_id",
+        "author_id",
+        "viewer_id",
+        "viewer_name",
+        "viewer_avatar_color",
+        "viewed_at_iso",
+        "createdAt",
+        "updatedAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "Private owner-only user profile and settings including email PII."
+    },
+    "/users/{userId}/contacts/{contactUid}": {
+      "schema": { "$ref": "#/entities/UserContact" },
+      "description": "Owner-only contact labels storing emails the user explicitly searched."
+    },
+    "/presence/{userId}": {
+      "schema": { "$ref": "#/entities/PresenceCard" },
+      "description": "Non-PII presence and display card readable by signed-in users via exact ID lookup."
+    },
+    "/email_directory/{emailHash}": {
+      "schema": { "$ref": "#/entities/EmailDirectoryEntry" },
+      "description": "SHA-256 exact-email directory lookup without exposing raw email PII or allowing list queries."
+    },
+    "/conversations/{conversationId}": {
+      "schema": { "$ref": "#/entities/Conversation" },
+      "description": "Canonical 1-on-1 conversations between two fixed participants."
+    },
+    "/conversations/{conversationId}/participants/{participantId}": {
+      "schema": { "$ref": "#/entities/ConversationParticipant" },
+      "description": "Per-participant read timestamp and typing state for a conversation."
+    },
+    "/conversations/{conversationId}/messages/{messageId}": {
+      "schema": { "$ref": "#/entities/Message" },
+      "description": "Text and sticker messages belonging to a conversation."
+    },
+    "/conversations/{conversationId}/reactions/{reactionId}": {
+      "schema": { "$ref": "#/entities/MessageReaction" },
+      "description": "Emoji reactions on messages within a conversation."
+    },
+    "/statuses/{statusId}": {
+      "schema": { "$ref": "#/entities/Status" },
+      "description": "24-hour picture, video, text, and sticker status updates visible to the author and selected contacts."
+    },
+    "/statuses/{statusId}/views/{viewerId}": {
+      "schema": { "$ref": "#/entities/StatusView" },
+      "description": "Per-viewer read receipts for a status update."
+    }
+  }
+}

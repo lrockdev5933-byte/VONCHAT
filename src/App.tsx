@@ -4,12 +4,14 @@ import { auth, onIdTokenChanged, type User } from './lib/firebase';
 import { isSupabaseConfigured, syncSupabaseRealtimeAuth } from './lib/supabase';
 import {
   formatSupabaseError,
+  isBackendConfigured,
   setPresenceStatus,
   upsertUserProfile,
 } from './lib/chatService';
 import type { Profile } from './types/chat';
 import { AuthView } from './components/AuthView';
 import { ChatWorkspace } from './components/ChatWorkspace';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import { VonChatLogo } from './components/VonChatLogo';
 
 export default function App() {
@@ -32,13 +34,15 @@ export default function App() {
         return;
       }
 
-      if (!isSupabaseConfigured) {
+      if (!isBackendConfigured) {
         return;
       }
 
       try {
         setProfileSyncError(null);
-        await syncSupabaseRealtimeAuth();
+        if (isSupabaseConfigured) {
+          await syncSupabaseRealtimeAuth();
+        }
         const syncedProfile = await upsertUserProfile(nextUser);
         setProfile(syncedProfile);
       } catch (err) {
@@ -50,7 +54,7 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    if (!user || !isSupabaseConfigured) {
+    if (!user || !isBackendConfigured) {
       return;
     }
 
@@ -73,28 +77,26 @@ export default function App() {
     };
   }, [user]);
 
-  if (!authReady) {
-    return (
-      <div className="min-h-screen bg-[#F4F8F5] flex flex-col items-center justify-center gap-4">
-        <VonChatLogo size="md" tone="light" />
-        <div className="flex items-center gap-2 text-sm text-[#4B6856]">
-          <Loader2 className="w-4 h-4 animate-spin text-[#15803D]" />
-          <span>Loading your session...</span>
-        </div>
-      </div>
-    );
-  }
-
-  if (!user) {
-    return <AuthView />;
-  }
-
   return (
-    <ChatWorkspace
-      user={user}
-      profile={profile}
-      profileSyncError={profileSyncError}
-      onProfileUpdated={setProfile}
-    />
+    <ErrorBoundary>
+      {!authReady ? (
+        <div className="min-h-screen bg-[#F4F8F5] flex flex-col items-center justify-center gap-4">
+          <VonChatLogo size="md" tone="light" />
+          <div className="flex items-center gap-2 text-sm text-[#4B6856]">
+            <Loader2 className="w-4 h-4 animate-spin text-[#15803D]" />
+            <span>Loading your session...</span>
+          </div>
+        </div>
+      ) : !user ? (
+        <AuthView />
+      ) : (
+        <ChatWorkspace
+          user={user}
+          profile={profile}
+          profileSyncError={profileSyncError}
+          onProfileUpdated={setProfile}
+        />
+      )}
+    </ErrorBoundary>
   );
 }

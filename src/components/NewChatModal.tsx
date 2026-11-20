@@ -1,6 +1,11 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import { Search, X, UserPlus, AlertCircle, Loader2 } from 'lucide-react';
-import { findUsersByEmail, findOrCreateConversation, formatSupabaseError } from '../lib/chatService';
+import {
+  activeBackend,
+  findUsersByEmail,
+  findOrCreateConversation,
+  formatSupabaseError,
+} from '../lib/chatService';
 import type { Profile } from '../types/chat';
 
 interface NewChatModalProps {
@@ -37,6 +42,13 @@ export function NewChatModal({
     if (!isOpen) return;
     const trimmed = query.trim();
     if (!trimmed) {
+      setResults([]);
+      setHasSearched(false);
+      setErrorMessage(null);
+      return;
+    }
+
+    if (activeBackend === 'firebase' && (!trimmed.includes('@') || !trimmed.includes('.'))) {
       setResults([]);
       setHasSearched(false);
       setErrorMessage(null);
@@ -86,7 +98,11 @@ export function NewChatModal({
     setStartingUserId(targetUser.id);
     setErrorMessage(null);
     try {
-      const conversationId = await findOrCreateConversation(targetUser.id);
+      const conversationId = await findOrCreateConversation(
+        targetUser.id,
+        currentUid,
+        targetUser
+      );
       onConversationOpened(conversationId);
       onClose();
     } catch (err) {
@@ -155,7 +171,9 @@ export function NewChatModal({
 
             {!searching && !hasSearched && (
               <div className="py-10 text-center text-sm text-[#63806F]">
-                Type an email address above to look up a registered member.
+                {activeBackend === 'firebase'
+                  ? 'Enter their full email address above to look up a registered member.'
+                  : 'Type an email address above to look up a registered member.'}
               </div>
             )}
 
@@ -163,7 +181,7 @@ export function NewChatModal({
               <div className="py-10 text-center space-y-1">
                 <p className="text-sm font-medium text-[#1F3A2A]">No matching user found</p>
                 <p className="text-xs text-[#63806F]">
-                  Ask them to sign up on vonChat with their email first.
+                  Ask them to sign in to vonChat with their email first.
                 </p>
               </div>
             )}
